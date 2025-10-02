@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Team - Эко-курьер</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Приветственное окно -->
+    <div id="welcomeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeWelcome">&times;</span>
+            <h2>Добро пожаловать!</h2>
+            <p>Через наше приложение вы можете вызвать эко-курьера для вывоза мусора и получать бонусы за сортировку отходов.</p>
+        </div>
+    </div>
+
+    <!-- Экран регистрации -->
+    <div id="registrationScreen" class="screen hidden">
+        <div class="container">
+            <h1>Регистрация</h1>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <input type="text" id="login" placeholder="Логин" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Пароль" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="nickname" placeholder="Ник" required>
+                </div>
+                <button type="submit" class="btn-primary">Зарегистрироваться</button>
+            </form>
+            
+            <!-- Анимация галочки -->
+            <div id="successAnimation" class="success-animation hidden">
+                <div class="checkmark">✓</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Главная страница -->
+    <div id="mainScreen" class="screen hidden">
+        <div class="container">
+            <!-- Описание сайта -->
+            <div class="site-description">
+                <p>Этот сайт создан для вызова эко-курьера и экокоманды для уборки мусора, чистки территорий и участия в движении Green Team.</p>
+            </div>
+
+            <!-- Чат -->
+            <div class="chat-section">
+                <h3>Чат</h3>
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message system">Добро пожаловать в чат Green Team!</div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Введите сообщение...">
+                    <button id="sendMessage" class="btn-send">Отправить</button>
+                </div>
+            </div>
+
+            <!-- Меню услуг -->
+            <div class="services-section">
+                <h3>Услуги</h3>
+                <div class="services-grid">
+                    <div class="service-card" data-service="cleanup">
+                        <h4>Уборка мусора</h4>
+                        <p>Вызов эко-курьера для вывоза отходов</p>
+                    </div>
+                    <div class="service-card" data-service="territory">
+                        <h4>Чистка территории</h4>
+                        <p>Профессиональная уборка территории</p>
+                    </div>
+                    <div class="service-card" data-service="greenteam">
+                        <h4>Вступление в Green Team</h4>
+                        <p>Присоединиться к экологическому движению</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Обратная связь -->
+            <div class="feedback-section">
+                <h3>Обратная связь</h3>
+                <form id="feedbackForm">
+                    <textarea id="feedbackMessage" placeholder="Ваше сообщение..." rows="4"></textarea>
+                    <button type="submit" class="btn-primary">Отправить в Green Team</button>
+                </form>
+            </div>
+
+            <!-- Кнопка бонусов -->
+            <div class="bonus-section">
+                <button id="bonusButton" class="btn-bonus disabled">Забрать бонусы</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Всплывающее сообщение о бонусах -->
+    <div id="bonusMessage" class="bonus-message hidden">
+        <p>Вы забрали 10 бонусов! Мы благодарны за то, что вы против загрязнения природы.</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
