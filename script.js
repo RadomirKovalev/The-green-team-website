@@ -3,7 +3,9 @@ let appState = {
     isRegistered: false,
     hasOrderedService: false,
     currentUser: null,
-    chatMessages: []
+    chatMessages: [],
+    registrationAttempts: 0,
+    maxRegistrationAttempts: 3
 };
 
 // DOM элементы
@@ -21,8 +23,24 @@ const messageInput = document.getElementById('messageInput');
 const sendMessageBtn = document.getElementById('sendMessage');
 const feedbackForm = document.getElementById('feedbackForm');
 
+// Элементы формы регистрации
+const loginInput = document.getElementById('login');
+const passwordInput = document.getElementById('password');
+const nicknameInput = document.getElementById('nickname');
+const loginCounter = document.getElementById('loginCounter');
+const passwordCounter = document.getElementById('passwordCounter');
+const nicknameCounter = document.getElementById('nicknameCounter');
+const attemptsCounter = document.getElementById('attemptsCounter');
+const remainingAttemptsSpan = document.getElementById('remainingAttempts');
+
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
+    // Проверяем количество попыток регистрации
+    const savedAttempts = localStorage.getItem('greenTeamRegistrationAttempts');
+    if (savedAttempts) {
+        appState.registrationAttempts = parseInt(savedAttempts);
+    }
+    
     // Проверяем, есть ли сохраненные данные пользователя
     const savedUser = localStorage.getItem('greenTeamUser');
     if (savedUser) {
@@ -30,10 +48,16 @@ document.addEventListener('DOMContentLoaded', function() {
         appState.isRegistered = true;
         showMainScreen();
     } else {
-        showWelcomeModal();
+        // Проверяем, не превышен ли лимит попыток регистрации
+        if (appState.registrationAttempts >= appState.maxRegistrationAttempts) {
+            showRegistrationBlocked();
+        } else {
+            showWelcomeModal();
+        }
     }
     
     initializeEventListeners();
+    initializeCharCounters();
 });
 
 // Показать приветственное окно
@@ -45,6 +69,66 @@ function showWelcomeModal() {
 function showRegistrationScreen() {
     welcomeModal.classList.add('hidden');
     registrationScreen.classList.remove('hidden');
+    updateAttemptsCounter();
+}
+
+// Обновление счетчика попыток
+function updateAttemptsCounter() {
+    const remaining = appState.maxRegistrationAttempts - appState.registrationAttempts;
+    
+    if (appState.registrationAttempts > 0) {
+        attemptsCounter.classList.remove('hidden');
+        remainingAttemptsSpan.textContent = remaining;
+        
+        // Меняем стиль при критическом количестве попыток
+        if (remaining <= 1) {
+            attemptsCounter.classList.add('warning');
+        } else {
+            attemptsCounter.classList.remove('warning');
+        }
+    } else {
+        attemptsCounter.classList.add('hidden');
+    }
+}
+
+// Показать экран блокировки регистрации
+function showRegistrationBlocked() {
+    // Создаем экран блокировки
+    const blockedScreen = document.createElement('div');
+    blockedScreen.id = 'blockedScreen';
+    blockedScreen.className = 'screen';
+    blockedScreen.innerHTML = `
+        <div class="container" style="text-align: center; padding: 40px;">
+            <h1 style="color: #f44336; margin-bottom: 20px;">Регистрация заблокирована</h1>
+            <p style="font-size: 18px; color: #666; margin-bottom: 30px;">
+                Вы превысили максимальное количество попыток регистрации (${appState.maxRegistrationAttempts}).
+            </p>
+            <p style="font-size: 16px; color: #888; margin-bottom: 20px;">
+                Обратитесь к администратору для разблокировки или очистите данные браузера.
+            </p>
+            <button onclick="clearRegistrationData()" class="btn-primary" style="background-color: #f44336; max-width: 300px;">
+                Очистить данные и начать заново
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(blockedScreen);
+    
+    // Скрываем другие экраны
+    welcomeModal.classList.add('hidden');
+    registrationScreen.classList.add('hidden');
+    mainScreen.classList.add('hidden');
+}
+
+// Очистка данных регистрации
+function clearRegistrationData() {
+    localStorage.removeItem('greenTeamRegistrationAttempts');
+    localStorage.removeItem('greenTeamUser');
+    localStorage.removeItem('greenTeamChat');
+    localStorage.removeItem('greenTeamFeedback');
+    
+    // Перезагружаем страницу
+    location.reload();
 }
 
 // Показать главную страницу
@@ -94,16 +178,136 @@ function initializeEventListeners() {
     feedbackForm.addEventListener('submit', handleFeedback);
 }
 
+// Инициализация счетчиков символов
+function initializeCharCounters() {
+    // Конфигурация полей и их ограничений
+    const fieldConfigs = [
+        { input: loginInput, counter: loginCounter, maxLength: 13, name: 'логин' },
+        { input: passwordInput, counter: passwordCounter, maxLength: 15, name: 'пароль' },
+        { input: nicknameInput, counter: nicknameCounter, maxLength: 12, name: 'ник' }
+    ];
+
+    fieldConfigs.forEach(config => {
+        if (config.input && config.counter) {
+            // Обновляем счетчик при вводе
+            config.input.addEventListener('input', function() {
+                updateCharCounter(config);
+            });
+
+            // Инициализируем счетчик
+            updateCharCounter(config);
+        }
+    });
+}
+
+// Обновление счетчика символов
+function updateCharCounter(config) {
+    const currentLength = config.input.value.length;
+    const maxLength = config.maxLength;
+    
+    // Обновляем текст счетчика
+    config.counter.textContent = `${currentLength}/${maxLength}`;
+    
+    // Удаляем все классы
+    config.counter.classList.remove('warning', 'limit');
+    
+    // Добавляем соответствующий класс в зависимости от заполненности
+    if (currentLength >= maxLength) {
+        config.counter.classList.add('limit');
+    } else if (currentLength >= maxLength * 0.8) {
+        config.counter.classList.add('warning');
+    }
+}
+
 // Обработка регистрации
 function handleRegistration(e) {
     e.preventDefault();
     
-    const login = document.getElementById('login').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const nickname = document.getElementById('nickname').value.trim();
+    // Увеличиваем счетчик попыток регистрации
+    appState.registrationAttempts++;
+    localStorage.setItem('greenTeamRegistrationAttempts', appState.registrationAttempts.toString());
+    
+    // Обновляем отображение счетчика
+    updateAttemptsCounter();
+    
+    const login = loginInput.value.trim();
+    const password = passwordInput.value.trim();
+    const nickname = nicknameInput.value.trim();
+    
+    // Показываем сколько попыток осталось
+    const remainingAttempts = appState.maxRegistrationAttempts - appState.registrationAttempts;
     
     if (!login || !password || !nickname) {
-        alert('Пожалуйста, заполните все поля');
+        if (remainingAttempts > 0) {
+            showNotification(`Пожалуйста, заполните все поля. Осталось попыток: ${remainingAttempts}`);
+        } else {
+            showNotification('Превышено максимальное количество попыток регистрации');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        }
+        return;
+    }
+    
+    // Проверяем ограничения длины
+    if (login.length > 13) {
+        if (remainingAttempts > 0) {
+            showNotification(`Логин не должен превышать 13 символов. Осталось попыток: ${remainingAttempts}`);
+        } else {
+            showNotification('Превышено максимальное количество попыток регистрации');
+            setTimeout(() => location.reload(), 2000);
+        }
+        return;
+    }
+    
+    if (password.length > 15) {
+        if (remainingAttempts > 0) {
+            showNotification(`Пароль не должен превышать 15 символов. Осталось попыток: ${remainingAttempts}`);
+        } else {
+            showNotification('Превышено максимальное количество попыток регистрации');
+            setTimeout(() => location.reload(), 2000);
+        }
+        return;
+    }
+    
+    if (nickname.length > 12) {
+        if (remainingAttempts > 0) {
+            showNotification(`Ник не должен превышать 12 символов. Осталось попыток: ${remainingAttempts}`);
+        } else {
+            showNotification('Превышено максимальное количество попыток регистрации');
+            setTimeout(() => location.reload(), 2000);
+        }
+        return;
+    }
+    
+    // Проверяем минимальную длину
+    if (login.length < 3) {
+        if (remainingAttempts > 0) {
+            showNotification(`Логин должен содержать минимум 3 символа. Осталось попыток: ${remainingAttempts}`);
+        } else {
+            showNotification('Превышено максимальное количество попыток регистрации');
+            setTimeout(() => location.reload(), 2000);
+        }
+        return;
+    }
+    
+    if (password.length < 4) {
+        if (remainingAttempts > 0) {
+            showNotification(`Пароль должен содержать минимум 4 символа. Осталось попыток: ${remainingAttempts}`);
+        } else {
+            showNotification('Превышено максимальное количество попыток регистрации');
+            setTimeout(() => location.reload(), 2000);
+        }
+        return;
+    }
+    
+    if (nickname.length < 2) {
+        if (remainingAttempts > 0) {
+            showNotification(`Ник должен содержать минимум 2 символа. Осталось попыток: ${remainingAttempts}`);
+        } else {
+            showNotification('Превышено максимальное количество попыток регистрации');
+            setTimeout(() => location.reload(), 2000);
+        }
         return;
     }
     

@@ -84,33 +84,155 @@ body {
 
 /* Экран регистрации */
 #registrationScreen {
-    background: linear-gradient(135deg, #e8e8e8 0%, #d4d4d4 100%);
+    background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 50%, #d4d4d4 100%);
+    padding: 20px 0;
 }
 
-#registrationScreen h1 {
+.registration-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    padding: 0 20px;
+}
+
+/* Заголовок и информация о сайте */
+.registration-header {
+    background: linear-gradient(135deg, #666 0%, #888 100%);
+    color: white;
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.registration-header h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.site-info h2 {
+    color: #f0f0f0;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.site-description-reg {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    color: #e0e0e0;
+}
+
+.eco-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.feature {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+}
+
+.feature:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Форма регистрации */
+.registration-form-section {
+    background-color: white;
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.registration-form-section h3 {
     text-align: center;
     color: #444;
-    margin-bottom: 30px;
-    font-size: 28px;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.attempts-counter {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 5px;
+}
+
+.attempts-counter p {
+    margin: 0;
+    color: #856404;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.attempts-counter.warning {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.attempts-counter.warning p {
+    color: #721c24;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+    font-size: 14px;
 }
 
 .form-group input {
     width: 100%;
     padding: 15px;
-    border: 2px solid #ccc;
+    border: 2px solid #ddd;
     border-radius: 8px;
     font-size: 16px;
-    background-color: #fff;
-    transition: border-color 0.3s;
+    background-color: #fafafa;
+    transition: all 0.3s;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #888;
+    border-color: #666;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(102, 102, 102, 0.1);
+}
+
+.char-counter {
+    position: absolute;
+    right: 10px;
+    bottom: -20px;
+    font-size: 12px;
+    color: #888;
+    transition: color 0.3s;
+}
+
+.char-counter.warning {
+    color: #ff9800;
+}
+
+.char-counter.limit {
+    color: #f44336;
 }
 
 .btn-primary {
@@ -405,6 +527,47 @@ body {
         margin: 20px;
     }
     
+    /* Адаптация экрана регистрации */
+    .registration-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 15px;
+    }
+    
+    .registration-header {
+        padding: 30px 20px;
+    }
+    
+    .registration-header h1 {
+        font-size: 28px;
+    }
+    
+    .site-info h2 {
+        font-size: 20px;
+    }
+    
+    .site-description-reg {
+        font-size: 16px;
+    }
+    
+    .eco-features {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .feature {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    .registration-form-section {
+        padding: 30px 20px;
+    }
+    
+    .registration-form-section h3 {
+        font-size: 20px;
+    }
+    
     .services-grid {
         grid-template-columns: 1fr;
     }
@@ -443,8 +606,38 @@ body {
         font-size: 14px;
     }
     
-    #registrationScreen h1 {
+    /* Мобильная адаптация регистрации */
+    .registration-container {
+        padding: 0 10px;
+    }
+    
+    .registration-header {
+        padding: 20px 15px;
+    }
+    
+    .registration-header h1 {
         font-size: 24px;
+    }
+    
+    .site-info h2 {
+        font-size: 18px;
+    }
+    
+    .site-description-reg {
+        font-size: 14px;
+    }
+    
+    .feature {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .registration-form-section {
+        padding: 20px 15px;
+    }
+    
+    .registration-form-section h3 {
+        font-size: 18px;
     }
     
     .form-group input {
@@ -455,6 +648,11 @@ body {
     .btn-primary {
         padding: 12px;
         font-size: 14px;
+    }
+    
+    .char-counter {
+        font-size: 11px;
+        bottom: -18px;
     }
     
     .chat-messages {

@@ -18,24 +18,51 @@
 
     <!-- Экран регистрации -->
     <div id="registrationScreen" class="screen hidden">
-        <div class="container">
-            <h1>Регистрация</h1>
-            <form id="registrationForm">
-                <div class="form-group">
-                    <input type="text" id="login" placeholder="Логин" required>
+        <div class="registration-container">
+            <!-- Заголовок и информация о сайте -->
+            <div class="registration-header">
+                <h1>Green Team</h1>
+                <div class="site-info">
+                    <h2>Добро пожаловать!</h2>
+                    <p class="site-description-reg">Это сайт для вызова эко-курьеров для разных эко целей</p>
+                    <div class="eco-features">
+                        <div class="feature">🌱 Экологическая уборка</div>
+                        <div class="feature">♻️ Сортировка отходов</div>
+                        <div class="feature">🌍 Защита природы</div>
+                        <div class="feature">🎁 Система бонусов</div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Пароль" required>
+            </div>
+
+            <!-- Форма регистрации -->
+            <div class="registration-form-section">
+                <h3>Регистрация</h3>
+                <div id="attemptsCounter" class="attempts-counter hidden">
+                    <p>Осталось попыток: <span id="remainingAttempts">3</span></p>
                 </div>
-                <div class="form-group">
-                    <input type="text" id="nickname" placeholder="Ник" required>
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="login">Логин (до 13 символов)</label>
+                        <input type="text" id="login" placeholder="Введите логин" maxlength="13" required>
+                        <span class="char-counter" id="loginCounter">0/13</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль (до 15 символов)</label>
+                        <input type="password" id="password" placeholder="Введите пароль" maxlength="15" required>
+                        <span class="char-counter" id="passwordCounter">0/15</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname">Ник (до 12 символов)</label>
+                        <input type="text" id="nickname" placeholder="Введите ник" maxlength="12" required>
+                        <span class="char-counter" id="nicknameCounter">0/12</span>
+                    </div>
+                    <button type="submit" class="btn-primary">Присоединиться к Green Team</button>
+                </form>
+                
+                <!-- Анимация галочки -->
+                <div id="successAnimation" class="success-animation hidden">
+                    <div class="checkmark">✓</div>
                 </div>
-                <button type="submit" class="btn-primary">Зарегистрироваться</button>
-            </form>
-            
-            <!-- Анимация галочки -->
-            <div id="successAnimation" class="success-animation hidden">
-                <div class="checkmark">✓</div>
             </div>
         </div>
     </div>
